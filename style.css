@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=TASA+Explorer:wght@400..800&display=swap');
+/*this is we're storing our custom variables*/
+:root {
+    --color-01: #ffe1e1;
+    --color-02: #ffb3b3;
+    --color-03: #ff8080;
+    --color-04: #604040;
+    --border: 2px solid var(--color-04);
+}
+media (prefers-color-scheme: dark) {
+    :root {
+    --color-01: #604040;
+    --color-02: #ffb3b3;
+    --color-03: #ff8080;
+    --color-04: #ffe1e1;
+;
+}
+}
+
+body {
+    font-family: 'TASA Explorer', sans-serif;
+    background-color: var(--color-01);
+    color: var(--color-04);
+}
+
+ dialog
+{
+    background-color: var(--color-02);
+    color: var(--color-04);
+    border: var(--border);
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+dialog[open] {
+    position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+button {
+    background-color: var(--color-03);
+    color: var(--color-04);
+    border: var(--border);
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+}
