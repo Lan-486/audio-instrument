@@ -1,25 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Audio Instrument</title>
 
-    <link rel="stylesheet" href="reset.css">    
+    <link rel="stylesheet" href="reset.css">
     <link rel="stylesheet" href="style.css">
-   <script src="http://unpkg.com/tone"></script>
+
+    <script src="https://unpkg.com/tone"></script>
     <script src="main.js" defer></script>
 </head>
 <body>
     <dialog id="intro-dialog">
-        <p> Hi I am going to make some sound</p>
+        <p>Hi I'm going to make some sound</p>
         <button id="intro-dialog-close">ok</button>
     </dialog>
     <header>
         <h1>Audio Instrument</h1>
     </header>
     <main>
-        <button id="test-button">sound Check</button>
+        <button id="test-button" data-note="c4">sound check</button>
+        <button id="key-test" data-note="d4">key</button>
+        <p id="p1" draggable="true">This element is draggable.</p>
+        <p id="target">Drop Zone</p>
     </main>
+
 </body>
 </html>
