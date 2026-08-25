@@ -18,9 +18,70 @@ media (prefers-color-scheme: dark) {
 }
 
 body {
+    margin: 0;
+    padding: 40px;
     font-family: 'TASA Explorer', sans-serif;
     background-color: var(--color-01);
     color: var(--color-04);
+}
+
+main {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.prototype {
+  display: flex;
+  gap: 40px;
+  margin-top: 40px;
+}
+
+.draggable-area,
+.drop-zone {
+  width: 400px;
+  min-height: 300px;
+  padding: 20px;
+
+  border: 2px solid var(--color-04);
+}
+
+.draggable-area {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+
+  background-color: #ffffff;
+}
+
+.drop-zone {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 20px;
+
+  background-color: var(--color-02);
+}
+
+.creature {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  flex: 0 0 70px;
+  width: 70px;
+  height: 70px;
+
+  background-color: var(--color-03);
+  border: 2px solid var(--color-04);
+
+  font-size: 20px;
+  font-weight: bold;
+
+  cursor: grab;
+}
+
+.creature:active {
+  cursor: grabbing;
 }
 
  dialog

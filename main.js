@@ -94,15 +94,43 @@ function dragstartHandler(ev) {
   );
 }
 
-const p1 = document.getElementById("p1");
-p1.addEventListener("dragstart", dragstartHandler);
-// Cancel dragover so that drop can fire
-target.addEventListener("dragover", (ev) => {
-  ev.preventDefault();
+const draggableElements = document.querySelectorAll(".creature");
+
+// Find the drop zone.
+const dropZone = document.getElementById("target");
+
+// Run when a block starts being dragged.
+function dragStartHandler(event) {
+  // Store the ID of the dragged block.
+  event.dataTransfer.setData("text/plain", event.currentTarget.id);
+  
+  event.dataTransfer.effectAllowed = "move";
+}
+
+// Add the dragstart event to every block.
+draggableElements.forEach(function (element) {
+  element.addEventListener("dragstart", dragStartHandler);
 });
 
-target.addEventListener("drop", (ev) => {
-  ev.preventDefault();
-  const data = ev.dataTransfer.getData("text/plain");
-  ev.target.append(data);
+// Allow blocks to be dropped inside the drop zone.
+dropZone.addEventListener("dragover", function (event) {
+  event.preventDefault();
+
+  event.dataTransfer.dropEffect = "move";
+});
+
+// Move the block when it is dropped.
+dropZone.addEventListener("drop", function (event) {
+  event.preventDefault();
+
+  // Read the ID stored during dragstart.
+  const draggedElementId =
+    event.dataTransfer.getData("text/plain");
+
+  // Find the dragged block using its ID.
+  const draggedElement =
+    document.getElementById(draggedElementId);
+
+  // Move the block into the drop zone.
+  event.currentTarget.appendChild(draggedElement);
 });
