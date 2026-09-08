@@ -2,9 +2,9 @@
 /*this is we're storing our custom variables*/
 :root {
     --color-01: #ffe1e1;
-    --color-02: #ffb3b3;
-    --color-03: #ff8080;
-    --color-04: #604040;
+    --color-02: #aeaeae;
+    --color-03: #626f9c;
+    --color-04: #474060;
     --border: 2px solid var(--color-04);
 }
 media (prefers-color-scheme: dark) {

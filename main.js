@@ -6,10 +6,7 @@ const introDialog = document.getElementById("intro-dialog");
 const introDialogCloseButton = document.getElementById("intro-dialog-close");
 // show the found element in our browser console
 // console.log(introDialog);
-// find our test button
-const testButton = document.getElementById('test-button');
-// find my key button for testing
-const key = document.getElementById("key-test");
+
 // init our synth
 // changed this to poly synth
 const synth = new Tone.PolySynth();
@@ -37,51 +34,67 @@ introDialog.addEventListener("close", toneInit);
 
 ////// Tone
 // run to setup our audio system
-function toneInit(){
-    synth.connect(Tone.Destination);
+async function toneInit() {
+  await Tone.start();
+
+  synth.connect(Tone.Destination);
+
+  // Create one looping audio player for each block
+  Object.entries(layerSettings).forEach(([id, file]) => {
+    const volume = new Tone.Volume(-Infinity).toDestination();
+
+    const player = new Tone.Player({
+      url: file,
+      loop: true
+    }).connect(volume);
+
+    audioPlayers[id] = player;
+    audioVolumes[id] = volume;
+  });
+
+  // Wait for all audio files to load
+  await Tone.loaded();
+
+  audioReady = true;
+  console.log("Audio is ready");
 }
 
-// do something when this button is clicked
-//testButton.addEventListener("click", playNote);
-
-// function that runs when button is clicked
-function playNote(){
-    //play a note for a duration
-    synth.triggerAttackRelease("c4", "8n");
-}
-
-function playDataNote(e){
-    console.log(e);
-    let buttonClicked = e.target;
-    console.log(buttonClicked)
-    let note = buttonClicked.dataset.note;
-    console.log(note);
-    synth.triggerAttackRelease(note, "8n");
-}
-
-function startNote(e){
-    // find key that was pressed
-    let keyPressed = e.target;
-    // find the note associated with the key
-    let note = keyPressed.dataset.note;
-    synth.triggerAttack(note);
-}
-
-function endNote(e){
-    let keyPressed = e.target;
-    let note = keyPressed.dataset.note;
-    synth.triggerRelease(note);
-}
-
-key.addEventListener("mousedown", startNote);
-key.addEventListener("mouseup", endNote);
-key.addEventListener("mouseleave", endNote);
-
-
-//key.addEventListener("click", playDataNote);
-testButton.addEventListener("click", playDataNote);
-
+// Each block controls one different audio layer.
+const layerSettings = {
+  "block-1": "assets/audio/underwater-ambience.wav",
+  "block-2": "assets/audio/bubbles-2.wav",
+  "block-3": "assets/audio/bubbles-loop.mp3"
+};
 const target = document.getElementById("target");
+// Start or stop the sound when a block enters or leaves the aquarium
+function setLayerActive(id, active) {
+  if (!audioReady) return;
+
+  const player = audioPlayers[id];
+  const volume = audioVolumes[id];
+
+  if (!player || !volume) return;
+
+  if (active) {
+    if (player.state !== "started") {
+      player.start();
+    }
+
+    volume.volume.rampTo(-8, 0.8);
+  } else {
+    volume.volume.rampTo(-Infinity, 0.8);
+
+    setTimeout(() => {
+      if (player.state === "started") {
+        player.stop();
+      }
+    }, 800);
+  }
+}
+
+const audioPlayers = {};
+const audioVolumes = {};
+let audioReady = false;
 
 
 function dragstartHandler(ev) {
@@ -98,6 +111,8 @@ const draggableElements = document.querySelectorAll(".creature");
 
 // Find the drop zone.
 const dropZone = document.getElementById("target");
+
+const draggableArea = document.querySelector(".draggable-area");
 
 // Run when a block starts being dragged.
 function dragStartHandler(event) {
@@ -131,6 +146,29 @@ dropZone.addEventListener("drop", function (event) {
   const draggedElement =
     document.getElementById(draggedElementId);
 
-  // Move the block into the drop zone.
+// Move the block into the drop zone.
+event.currentTarget.appendChild(draggedElement);
+
+// The block is now inside the aquarium, so start its sound.
+setLayerActive(draggedElementId, true);
+});
+
+// Allow blocks to be dragged back to the original area.
+draggableArea.addEventListener("dragover", function (event) {
+  event.preventDefault();
+  event.dataTransfer.dropEffect = "move";
+});
+
+draggableArea.addEventListener("drop", function (event) {
+  event.preventDefault();
+
+  const draggedElementId = event.dataTransfer.getData("text/plain");
+  const draggedElement = document.getElementById(draggedElementId);
+
+  if (!draggedElement) return;
+
   event.currentTarget.appendChild(draggedElement);
+
+  // Stop the sound when the block leaves the aquarium.
+  setLayerActive(draggedElementId, false);
 });
