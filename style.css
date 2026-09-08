@@ -7,15 +7,7 @@
     --color-04: #474060;
     --border: 2px solid var(--color-04);
 }
-media (prefers-color-scheme: dark) {
-    :root {
-    --color-01: #604040;
-    --color-02: #ffb3b3;
-    --color-03: #ff8080;
-    --color-04: #ffe1e1;
-;
-}
-}
+
 
 body {
     margin: 0;
@@ -31,9 +23,7 @@ main {
 }
 
 .prototype {
-  display: flex;
-  gap: 40px;
-  margin-top: 40px;
+  flex-direction: column;
 }
 
 .draggable-area,
