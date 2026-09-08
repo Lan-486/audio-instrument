@@ -32,49 +32,61 @@ main {
 
 .prototype {
   display: flex;
-  gap: 40px;
+  flex-direction: column;
+  align-items: center;
+  gap: 35px;
   margin-top: 40px;
 }
 
-.draggable-area,
 .drop-zone {
-  width: 400px;
-  min-height: 300px;
-  padding: 20px;
+  order: 1;
 
+  display: flex;
+  justify-content: center;
+  align-content: flex-start;
+  flex-wrap: wrap;
+  gap: 25px;
+
+  width: 750px;
+  min-height: 500px;
+  padding: 30px;
+
+  background-color: var(--color-02);
   border: 2px solid var(--color-04);
+  box-sizing: border-box;
 }
 
 .draggable-area {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
+  order: 2;
 
-  background-color: #ffffff;
-}
-
-.drop-zone {
   display: flex;
+  justify-content: center;
+  align-items: center;
   flex-wrap: wrap;
-  align-content: flex-start;
-  gap: 20px;
+  gap: 45px;
 
-  background-color: var(--color-02);
+  width: 100%;
+  min-height: 100px;
+  padding: 20px 0;
+
+  background-color: transparent;
+  border: none;
 }
+
 
 .creature {
   display: flex;
   justify-content: center;
   align-items: center;
 
-  flex: 0 0 70px;
-  width: 70px;
-  height: 70px;
+  flex: 0 0 50px;
+  width: 50px;
+  height: 50px;
 
   background-color: var(--color-03);
   border: 2px solid var(--color-04);
 
-  font-size: 20px;
+  font-size: 16px;
   font-weight: bold;
 
   cursor: grab;
@@ -113,4 +125,20 @@ button {
     padding: 0.5rem 1rem;
     font-size: 1rem;
     cursor: pointer;
+}
+
+.drop-zone {
+  position: relative;
+  padding: 80px 30px 30px;
+}
+
+/* Keep the instruction text fixed at the top */
+.drop-zone p {
+  position: absolute;
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  margin: 0;
+  white-space: nowrap;
 }
