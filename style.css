@@ -23,33 +23,47 @@ main {
 }
 
 .prototype {
+  display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  margin-top: 40px;
 }
 
-.draggable-area,
-.drop-zone {
-  width: 400px;
-  min-height: 300px;
-  padding: 20px;
-
-  border: 2px solid var(--color-04);
-}
-
+/* Open area for the draggable blocks */
 .draggable-area {
   display: flex;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 20px;
 
-  background-color: #ffffff;
+  width: 100%;
+  min-height: 120px;
+  padding: 20px 0;
+
+  background-color: transparent;
+  border: none;
+}
+
+.draggable-area h2 {
+  margin: 0;
 }
 
 .drop-zone {
   display: flex;
-  flex-wrap: wrap;
+  justify-content: center;
   align-content: flex-start;
+  flex-wrap: wrap;
   gap: 20px;
 
+  width: 700px;
+  min-height: 450px;
+  padding: 30px;
+
   background-color: var(--color-02);
+  border: 2px solid var(--color-04);
+  box-sizing: border-box;
 }
 
 .creature {
