@@ -21,7 +21,15 @@ document.addEventListener("keydown", function (event) {
   // Stop the space bar from scrolling the page.
   event.preventDefault();
 
-  createBubble();
+// Choose a random number of bubbles, from 3 to 6.
+const bubbleCount = Math.floor(Math.random() * 4) + 3;
+
+// Create the bubbles one after another.
+for (let i = 0; i < bubbleCount; i++) {
+  setTimeout(function () {
+    createBubble();
+  }, i * 120);
+}
 });
 
 function createBubble() {
