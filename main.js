@@ -79,8 +79,10 @@ function setLayerActive(id, active) {
     if (player.state !== "started") {
       player.start();
     }
+const targetVolume = id === "block-3" ? 20 : 0;
+    volume.volume.rampTo(targetVolume, 0.8);
 
-    volume.volume.rampTo(-8, 0.8);
+    volume.volume.rampTo(0, 0.8);
   } else {
     volume.volume.rampTo(-Infinity, 0.8);
 
