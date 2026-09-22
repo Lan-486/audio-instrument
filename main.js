@@ -12,16 +12,42 @@ introDialogCloseButton.addEventListener("click", function () {
 
 const bubblesContainer = document.querySelector(".bubbles-container");
 
-// Create a bubble when the user presses the space bar.
+let spaceHeld = false;
+let bubbleTimer;
+
+// Keep creating bubbles while the user holds the space bar.
+function createBubbleStream() {
+  if (!spaceHeld) return;
+
+  createBubble();
+
+  // Randomise the delay before the next bubble appears.
+  const nextDelay = Math.random() * 300 + 180;
+  bubbleTimer = setTimeout(createBubbleStream, nextDelay);
+}
+
 document.addEventListener("keydown", function (event) {
-  // Only create bubbles after the welcome dialog has closed.
   if (introDialog.open) return;
-  if (event.code !== "Space" || event.repeat) return;
+  if (event.code !== "Space" || spaceHeld) return;
 
   // Stop the space bar from scrolling the page.
   event.preventDefault();
 
-  createBubble();
+  spaceHeld = true;
+  createBubbleStream();
+});
+
+document.addEventListener("keyup", function (event) {
+  if (event.code !== "Space") return;
+
+  spaceHeld = false;
+  clearTimeout(bubbleTimer);
+});
+
+// Stop the bubble stream if the user switches away from the browser window.
+window.addEventListener("blur", function () {
+  spaceHeld = false;
+  clearTimeout(bubbleTimer);
 });
 
 function createBubble() {
