@@ -36,17 +36,18 @@ function createBubble() {
   const bubble = document.createElement("span");
   bubble.classList.add("bubble");
 
-  const aquariumWidth = bubblesContainer.clientWidth;
-
+ 
   // Use Math.random() to choose the bubble's size and position.
   const size = Math.random() * 25 + 10;
-  const left = Math.random() * (aquariumWidth - size);
-  const drift = Math.random() * 100 - 50;
+
+  const drift = 0;
   const duration = Math.random() * 3 + 3;
+  const horizontalOffset = Math.random() * 160 - 80;
 
   bubble.style.width = `${size}px`;
   bubble.style.height = `${size}px`;
-  bubble.style.left = `${left}px`;
+  bubble.style.left = `calc(50% + ${horizontalOffset}px)`;
+  bubble.style.marginLeft = `${-size / 2}px`;
   bubble.style.setProperty("--drift", `${drift}px`);
   bubble.style.animationDuration = `${duration}s`;
 
