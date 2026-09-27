@@ -1,3 +1,9 @@
+let audioReady = false;
+
+const bubbleSound = new Tone.Player(
+  "assets/audio/bubbles-2.wav"
+).toDestination();
+
 // Find the welcome dialog and its close button.
 const introDialog = document.getElementById("intro-dialog");
 const introDialogCloseButton = document.getElementById("intro-dialog-close");
@@ -6,7 +12,12 @@ const introDialogCloseButton = document.getElementById("intro-dialog-close");
 introDialog.showModal();
 
 // Close the dialog when the user clicks the button.
-introDialogCloseButton.addEventListener("click", function () {
+introDialogCloseButton.addEventListener("click", async function () {
+  await Tone.start();
+  await Tone.loaded();
+
+  audioReady = true;
+
   introDialog.close();
 });
 
@@ -48,4 +59,9 @@ function createBubble() {
   bubble.addEventListener("animationend", function () {
     bubble.remove();
   });
+
+  // Play the bubble sound when the visual bubble is created.
+if (audioReady && bubbleSound.loaded) {
+  bubbleSound.start();
+}
 }
