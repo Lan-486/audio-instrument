@@ -1,3 +1,9 @@
+const bubbleSound = new Tone.Player(
+  "assets/audio/bubbles-2.wav"
+).toDestination();
+
+let audioReady = false;
+
 // Find the welcome dialog and its close button.
 const introDialog = document.getElementById("intro-dialog");
 const introDialogCloseButton = document.getElementById("intro-dialog-close");
@@ -9,6 +15,20 @@ introDialog.showModal();
 introDialogCloseButton.addEventListener("click", function () {
   introDialog.close();
 });
+introDialogCloseButton.addEventListener(
+  "click",
+  async function () {
+    await Tone.start();
+    await Tone.loaded();
+
+    audioReady = true;
+
+    console.log("Audio ready:", audioReady);
+    console.log("Bubble sound loaded:", bubbleSound.loaded);
+
+    introDialog.close();
+  }
+);
 
 const bubblesContainer = document.querySelector(".bubbles-container");
 
@@ -23,6 +43,11 @@ document.addEventListener("keydown", function (event) {
 
 // Choose a random number of bubbles, from 3 to 6.
 const bubbleCount = Math.floor(Math.random() * 4) + 3;
+// Play one sound for each Space press.
+if (audioReady && bubbleSound.loaded) {
+  bubbleSound.start();
+  console.log("Bubble sound played");
+}
 
 // Create the bubbles one after another.
 for (let i = 0; i < bubbleCount; i++) {
@@ -31,6 +56,18 @@ for (let i = 0; i < bubbleCount; i++) {
   }, i * 120);
 }
 });
+
+// Play one bubble sound for each Space press.
+if (audioReady && bubbleSound.loaded) {
+  bubbleSound.start();
+}
+
+// Create the bubbles one after another.
+for (let i = 0; i < bubbleCount; i++) {
+  setTimeout(function () {
+    createBubble();
+  }, i * 120);
+}
 
 function createBubble() {
   const bubble = document.createElement("span");
