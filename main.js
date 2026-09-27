@@ -1,3 +1,9 @@
+const bubbleSound = new Tone.Player(
+  "assets/audio/bubbles-2.wav"
+).toDestination();
+
+let audioReady = false;
+
 // Find the welcome dialog and its close button.
 const introDialog = document.getElementById("intro-dialog");
 const introDialogCloseButton = document.getElementById("intro-dialog-close");
@@ -6,9 +12,16 @@ const introDialogCloseButton = document.getElementById("intro-dialog-close");
 introDialog.showModal();
 
 // Close the dialog when the user clicks the button.
-introDialogCloseButton.addEventListener("click", function () {
-  introDialog.close();
-});
+introDialogCloseButton.addEventListener(
+  "click",
+  async function () {
+    await Tone.start();
+    await Tone.loaded();
+
+    audioReady = true;
+    introDialog.close();
+  }
+);
 
 const bubblesContainer = document.querySelector(".bubbles-container");
 
@@ -34,6 +47,11 @@ document.addEventListener("keydown", function (event) {
   event.preventDefault();
 
   spaceHeld = true;
+  // Play one sound when the Space interaction begins.
+  if (audioReady && bubbleSound.loaded) {
+  bubbleSound.start();
+ }
+
   createBubbleStream();
 });
 
