@@ -2,31 +2,59 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Bubble C</title>
+
+    <title>Aquarium with Me</title>
 
     <link rel="stylesheet" href="reset.css">
     <link rel="stylesheet" href="style.css">
+
     <script src="https://unpkg.com/tone"></script>
     <script src="main.js" defer></script>
 </head>
+
 <body>
     <dialog id="intro-dialog">
-        <p>Hi I'm going to make some sound</p>
-        <button id="intro-dialog-close">ok</button>
+        <p>This aquarium uses sound. Click OK to begin.</p>
+        <button id="intro-dialog-close">OK</button>
     </dialog>
+
     <header>
-        <h1>Bubble C</h1>
+        <h1>Aquarium with Me</h1>
     </header>
 
-    <main>
-  <section class="aquarium" aria-label="Aquarium">
-    <p class="instruction">Press or hold the space bar to create bubbles</p>
-    <div class="bubbles-container" aria-hidden="true"></div>
-  </section>
-</main>
+  <main>
+    <section class="aquarium" aria-label="Aquarium">
+        <div class="bubbles-container" aria-hidden="true"></div>
 
+        <p class="instruction">
+            Drag creatures here · Hold space for bubbles
+        </p>
+    </section>
+
+    <!-- Narrow drag bar: no creature pictures here -->
+    <section class="creature-picker" aria-label="Choose a creature">
+        <span class="picker-label">Drag into aquarium:</span>
+
+        <button
+            class="creature-option"
+            type="button"
+            draggable="true"
+            data-creature="turtle"
+        >
+            Sea turtle
+        </button>
+
+        <button
+            class="creature-option"
+            type="button"
+            draggable="true"
+            data-creature="jellyfish"
+        >
+            Jellyfish
+        </button>
+    </section>
+</main>
 </body>
 </html>

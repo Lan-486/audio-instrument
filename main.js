@@ -93,3 +93,303 @@ function createBubble() {
     bubble.remove();
   });
 }
+// Drag a UI button into the aquarium to create its creature image.
+(() => {
+    const tank = document.querySelector(".aquarium");
+    const buttons = document.querySelectorAll(".creature-option");
+
+    const creatures = {
+        turtle: {
+            src: "./images/turtle.png",
+            alt: "Sea turtle",
+            speed: 22
+        },
+        jellyfish: {
+           src: "./images/jellyfish.PNG",
+            alt: "Jellyfish",
+            speed: 12
+        }
+    };
+
+    // Each creature controls one looping sound.
+const creatureSounds = {
+    turtle: new Audio("./assets/audio/underwater-ambience.wav"),
+    jellyfish: new Audio("./assets/audio/jellyloop.wav")
+};
+
+Object.values(creatureSounds).forEach((sound) => {
+    sound.loop = true;
+    sound.volume = 0.5;
+    sound.preload = "auto";
+});
+
+function playCreatureSound(type) {
+    const sound = creatureSounds[type];
+    if (!sound) return;
+
+    sound.play().catch((error) => {
+        console.error("Could not play creature sound:", error);
+    });
+}
+
+function stopCreatureSound(type) {
+    const sound = creatureSounds[type];
+    if (!sound) return;
+
+    sound.pause();
+    sound.currentTime = 0;
+}
+
+// Prepare audio during the user's OK click.
+document.querySelector("#intro-dialog-close")
+    .addEventListener("click", () => {
+        Object.values(creatureSounds).forEach((sound) => {
+            sound.volume = 0;
+
+            sound.play().then(() => {
+                sound.pause();
+                sound.currentTime = 0;
+                sound.volume = 0.5;
+            }).catch((error) => {
+                sound.volume = 0.5;
+                console.error("Could not prepare audio:", error);
+            });
+        });
+    });
+
+    const swimmers = [];
+    const addedTypes = new Set();
+
+    let draggingType = null;
+
+    buttons.forEach((button) => {
+        button.addEventListener("dragstart", (event) => {
+            draggingType = button.dataset.creature;
+
+            event.dataTransfer.setData("text/plain", draggingType);
+            event.dataTransfer.effectAllowed = "copy";
+        });
+
+        button.addEventListener("dragend", () => {
+            draggingType = null;
+            tank.classList.remove("drag-over");
+        });
+    });
+
+    tank.addEventListener("dragover", (event) => {
+        if (!draggingType) return;
+
+        // Allow dropping into the aquarium.
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "copy";
+        tank.classList.add("drag-over");
+    });
+
+    tank.addEventListener("dragleave", (event) => {
+        if (!tank.contains(event.relatedTarget)) {
+            tank.classList.remove("drag-over");
+        }
+    });
+
+    tank.addEventListener("drop", (event) => {
+        event.preventDefault();
+        tank.classList.remove("drag-over");
+
+        const type = draggingType;
+        draggingType = null;
+
+        if (!creatures[type] || addedTypes.has(type)) return;
+
+        const settings = creatures[type];
+        const button = document.querySelector(
+            `.creature-option[data-creature="${type}"]`
+        );
+
+        // Store where the mouse was released.
+        const bounds = tank.getBoundingClientRect();
+        const dropX = event.clientX - bounds.left - tank.clientLeft;
+        const dropY = event.clientY - bounds.top - tank.clientTop;
+
+        addedTypes.add(type);
+        button.disabled = true;
+        button.draggable = false;
+        // Start this creature's loop when dropped into the aquarium.
+        playCreatureSound(type);
+
+        // Create the actual artwork only after dropping.
+        const image = document.createElement("img");
+
+        image.className = `swimming-creature ${type}`;
+        image.alt = settings.alt;
+        image.draggable = true;
+        image.style.visibility = "hidden";
+
+        image.addEventListener("load", () => {
+            const swimmer = {
+                image,
+                speed: settings.speed,
+                x: dropX - image.offsetWidth / 2,
+                y: dropY - image.offsetHeight / 2,
+                targetX: 0,
+                targetY: 0
+            };
+
+            keepInside(swimmer);
+            chooseTarget(swimmer);
+            draw(swimmer);
+
+            image.style.visibility = "visible";
+            swimmers.push(swimmer);
+
+           // Pause swimming while this creature is being dragged.
+         image.addEventListener("dragstart", (event) => {
+         swimmer.dragging = true;
+
+    event.dataTransfer.setData(
+        "application/x-aquarium-creature",
+        type
+    );
+
+    event.dataTransfer.effectAllowed = "move";
+});
+
+image.addEventListener("dragend", () => {
+    swimmer.dragging = false;
+
+    document.querySelector(".creature-picker")
+        .classList.remove("drag-over");
+}); 
+        }, { once: true });
+
+        image.addEventListener("error", () => {
+            image.remove();
+            addedTypes.delete(type);
+            button.disabled = false;
+            button.draggable = true;
+
+            console.error("Could not load:", settings.src);
+        }, { once: true });
+
+        tank.appendChild(image);
+        image.src = settings.src;
+    });
+
+    function limits(swimmer) {
+        return {
+            x: Math.max(0, tank.clientWidth - swimmer.image.offsetWidth),
+            y: Math.max(0, tank.clientHeight - swimmer.image.offsetHeight)
+        };
+    }
+
+    function keepInside(swimmer) {
+        const max = limits(swimmer);
+
+        swimmer.x = Math.max(0, Math.min(swimmer.x, max.x));
+        swimmer.y = Math.max(0, Math.min(swimmer.y, max.y));
+    }
+
+    function chooseTarget(swimmer) {
+        const max = limits(swimmer);
+
+        swimmer.targetX = Math.random() * max.x;
+        swimmer.targetY = Math.random() * max.y;
+    }
+
+    function draw(swimmer) {
+        swimmer.image.style.transform =
+            `translate(${swimmer.x}px, ${swimmer.y}px)`;
+    }
+
+    let lastTime = null;
+
+    function animate(time) {
+        const seconds = lastTime === null
+            ? 0
+            : Math.min((time - lastTime) / 1000, 0.05);
+
+        lastTime = time;
+
+        swimmers.forEach((swimmer) => {
+    if (swimmer.dragging) return;
+
+    const dx = swimmer.targetX - swimmer.x;
+            const dy = swimmer.targetY - swimmer.y;
+            const distance = Math.hypot(dx, dy);
+            const step = swimmer.speed * seconds;
+
+            if (distance <= step) {
+                swimmer.x = swimmer.targetX;
+                swimmer.y = swimmer.targetY;
+                chooseTarget(swimmer);
+            } else {
+                swimmer.x += (dx / distance) * step;
+                swimmer.y += (dy / distance) * step;
+            }
+
+            keepInside(swimmer);
+            draw(swimmer);
+        });
+
+        requestAnimationFrame(animate);
+    }
+
+    window.addEventListener("resize", () => {
+        swimmers.forEach((swimmer) => {
+            keepInside(swimmer);
+            chooseTarget(swimmer);
+        });
+    });
+// Drag a creature back to the bottom bar to remove it.
+const picker = document.querySelector(".creature-picker");
+
+picker.addEventListener("dragover", (event) => {
+    const isAquariumCreature = Array.from(
+        event.dataTransfer.types
+    ).includes("application/x-aquarium-creature");
+
+    if (!isAquariumCreature) return;
+
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+    picker.classList.add("drag-over");
+});
+
+picker.addEventListener("dragleave", (event) => {
+    if (!picker.contains(event.relatedTarget)) {
+        picker.classList.remove("drag-over");
+    }
+});
+
+picker.addEventListener("drop", (event) => {
+    const type = event.dataTransfer.getData(
+        "application/x-aquarium-creature"
+    );
+
+    if (!type) return;
+
+    event.preventDefault();
+    picker.classList.remove("drag-over");
+
+    const index = swimmers.findIndex((swimmer) => {
+        return swimmer.image.classList.contains(type);
+    });
+
+    if (index === -1) return;
+
+    // Remove the image and its swimming animation.
+    swimmers[index].image.remove();
+    swimmers.splice(index, 1);
+    addedTypes.delete(type);
+    // Stop this creature's loop when removed.
+    stopCreatureSound(type);
+
+    // Restore the corresponding button.
+    const button = document.querySelector(
+        `.creature-option[data-creature="${type}"]`
+    );
+
+    button.disabled = false;
+    button.draggable = true;
+});
+    requestAnimationFrame(animate);
+})();
