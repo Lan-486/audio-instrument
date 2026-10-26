@@ -34,7 +34,7 @@ main {
     margin: 0 auto;
 }
 
-/* Aquarium: match this ratio to your background image */
+
 .aquarium {
     position: relative;
     isolation: isolate;
@@ -291,4 +291,45 @@ main {
 .creature-picker.drag-over {
     outline: 2px solid #a8c8ce;
     background-color: #365565;
+}
+
+/* Highlight the creature's silhouette on hover. */
+.aquarium .swimming-creature {
+    pointer-events: auto;
+    cursor: grab;
+    transition: filter 0.25s ease;
+}
+
+.aquarium .swimming-creature:hover {
+    filter: drop-shadow(0 0 6px #b9e6ed);
+}
+
+/* Stronger glow while dragging. */
+.aquarium .swimming-creature.is-dragging {
+    cursor: grabbing;
+    filter:
+        drop-shadow(0 0 5px #d5f5ff)
+        drop-shadow(0 0 12px #8bcbdc);
+}
+
+/* Size of the new creatures inside the aquarium */
+.aquarium .swimming-creature.tropicalfish {
+    width: 10%;
+}
+
+.aquarium .swimming-creature.mantaray {
+    width: 28%;
+}
+
+/* Make room for four temporary text buttons */
+.creature-picker {
+    width: min(100%, 660px);
+    gap: 12px;
+}
+
+.creature-option {
+    width: auto;
+    min-width: 0;
+    padding: 0 12px;
+    white-space: nowrap;
 }

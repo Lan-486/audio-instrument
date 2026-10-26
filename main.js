@@ -98,23 +98,41 @@ function createBubble() {
     const tank = document.querySelector(".aquarium");
     const buttons = document.querySelectorAll(".creature-option");
 
-    const creatures = {
-        turtle: {
-            src: "./images/turtle.png",
-            alt: "Sea turtle",
-            speed: 22
-        },
-        jellyfish: {
-           src: "./images/jellyfish.PNG",
-            alt: "Jellyfish",
-            speed: 12
-        }
-    };
+   const creatures = {
+    turtle: {
+        src: "./images/turtle.png",
+        alt: "Sea turtle",
+        speed: 22
+    },
+
+    jellyfish: {
+        src: "./images/jellyfish.PNG",
+        alt: "Jellyfish",
+        speed: 12
+    },
+
+    tropicalfish: {
+        src: "./images/tropicalfish.png",
+        alt: "Tropical fish",
+        speed: 30
+    },
+
+    mantaray: {
+        src: "./images/mantaray.png",
+        alt: "Manta ray",
+        speed: 18
+    }
+};
 
     // Each creature controls one looping sound.
 const creatureSounds = {
     turtle: new Audio("./assets/audio/underwater-ambience.wav"),
-    jellyfish: new Audio("./assets/audio/jellyloop.wav")
+
+    jellyfish: new Audio("./assets/audio/jellyloop.wav"),
+
+    tropicalfish: new Audio("./assets/audio/tropical-fish.wav"),
+
+    mantaray: new Audio("./assets/audio/manta-ray.mp3")
 };
 
 Object.values(creatureSounds).forEach((sound) => {
@@ -241,9 +259,10 @@ document.querySelector("#intro-dialog-close")
             image.style.visibility = "visible";
             swimmers.push(swimmer);
 
-           // Pause swimming while this creature is being dragged.
-         image.addEventListener("dragstart", (event) => {
-         swimmer.dragging = true;
+           // Pause swimming and highlight the creature while dragging.
+image.addEventListener("dragstart", (event) => {
+    swimmer.dragging = true;
+    image.classList.add("is-dragging");
 
     event.dataTransfer.setData(
         "application/x-aquarium-creature",
@@ -253,12 +272,15 @@ document.querySelector("#intro-dialog-close")
     event.dataTransfer.effectAllowed = "move";
 });
 
+// Resume swimming and remove the highlight.
 image.addEventListener("dragend", () => {
     swimmer.dragging = false;
+    image.classList.remove("is-dragging");
 
     document.querySelector(".creature-picker")
         .classList.remove("drag-over");
-}); 
+});
+
         }, { once: true });
 
         image.addEventListener("error", () => {
