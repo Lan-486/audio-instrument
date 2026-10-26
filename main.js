@@ -127,15 +127,12 @@ function createBubble() {
     // Each creature controls one looping sound.
 const creatureSounds = {
     turtle: new Audio("./assets/audio/underwater-ambience.wav"),
-
     jellyfish: new Audio("./assets/audio/jellyloop.wav"),
-
     tropicalfish: new Audio("./assets/audio/tropical-fish.wav"),
-
     mantaray: new Audio("./assets/audio/manta-ray.wav")
 };
 
-// Set each creature's volume separately.
+// Volume must stay between 0 and 1.
 const creatureVolumes = {
     turtle: 1,
     jellyfish: 0.5,
@@ -143,21 +140,44 @@ const creatureVolumes = {
     mantaray: 0.5
 };
 
-Object.values(creatureSounds).forEach((sound) => {
+// Create one shared audio context.
+const creatureAudioContext = new AudioContext();
+const creaturePanners = {};
+
+Object.entries(creatureSounds).forEach(([type, sound]) => {
     sound.loop = true;
     sound.preload = "auto";
+    sound.volume = creatureVolumes[type];
+
+    // Connect each sound to its own stereo panner.
+    const source =
+        creatureAudioContext.createMediaElementSource(sound);
+
+    const panner =
+        creatureAudioContext.createStereoPanner();
+
+    source.connect(panner);
+    panner.connect(creatureAudioContext.destination);
+
+    creaturePanners[type] = panner;
 });
 
-function playCreatureSound(type) {
+// Enable audio when the user clicks OK.
+document.querySelector("#intro-dialog-close")
+    .addEventListener("click", () => {
+        creatureAudioContext.resume().catch(console.error);
+    });
+
+async function playCreatureSound(type) {
     const sound = creatureSounds[type];
     if (!sound) return;
 
-    // Apply the correct volume every time playback starts.
-    sound.volume = creatureVolumes[type];
-
-    sound.play().catch((error) => {
+    try {
+        await creatureAudioContext.resume();
+        await sound.play();
+    } catch (error) {
         console.error("Could not play creature sound:", error);
-    });
+    }
 }
 
 function stopCreatureSound(type) {
@@ -168,23 +188,28 @@ function stopCreatureSound(type) {
     sound.currentTime = 0;
 }
 
-// Prepare audio during the user's OK click.
-document.querySelector("#intro-dialog-close")
-    .addEventListener("click", () => {
-        Object.values(creatureSounds).forEach((sound) => {
-            sound.volume = 0;
+// Update the sound using the creature's horizontal position.
+function updateCreaturePan(swimmer) {
+    const panner = creaturePanners[swimmer.type];
+    if (!panner || tank.clientWidth === 0) return;
 
-            sound.play().then(() => {
-                sound.pause();
-                sound.currentTime = 0;
-                sound.volume = 0.5;
-            }).catch((error) => {
-                sound.volume = 0.5;
-                console.error("Could not prepare audio:", error);
-            });
-        });
-    });
+    // Use the centre of the creature image.
+    const centreX =
+        swimmer.x + swimmer.image.offsetWidth / 2;
 
+    // Left = -1, centre = 0, right = 1.
+    const pan = Math.max(
+        -1,
+        Math.min(1, (centreX / tank.clientWidth) * 2 - 1)
+    );
+
+    // Smooth the change as the creature swims.
+    panner.pan.setTargetAtTime(
+        pan,
+        creatureAudioContext.currentTime,
+        0.1
+    );
+}
     const swimmers = [];
     const addedTypes = new Set();
 
@@ -254,6 +279,7 @@ document.querySelector("#intro-dialog-close")
 
         image.addEventListener("load", () => {
             const swimmer = {
+                type,
                 image,
                 speed: settings.speed,
                 x: dropX - image.offsetWidth / 2,
@@ -327,10 +353,12 @@ image.addEventListener("dragend", () => {
         swimmer.targetY = Math.random() * max.y;
     }
 
-    function draw(swimmer) {
-        swimmer.image.style.transform =
-            `translate(${swimmer.x}px, ${swimmer.y}px)`;
-    }
+   function draw(swimmer) {
+    swimmer.image.style.transform =
+        `translate(${swimmer.x}px, ${swimmer.y}px)`;
+
+    updateCreaturePan(swimmer);
+}
 
     let lastTime = null;
 

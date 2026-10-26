@@ -20,29 +20,38 @@
         <button id="intro-dialog-close">OK</button>
     </dialog>
 
-    <header>
-        <h1>Aquarium with Me</h1>
-    </header>
+  <header>
+    <h1>Aquarium with Me</h1>
+</header>
 
-  <main>
+<main>
     <section class="aquarium" aria-label="Aquarium">
         <div class="bubbles-container" aria-hidden="true"></div>
-
-        <p class="instruction">
-            Drag creatures here · Hold space for bubbles
-        </p>
     </section>
 
-    <!-- Narrow drag bar: no creature pictures here -->
-   <section class="creature-picker" aria-label="Choose a creature">
+    <!-- Instructions outside the aquarium -->
+    <p class="instruction">
+        Drag creatures here · Hold space for bubbles
+    </p>
+    </section>
+
+  <!-- Creature icons for the drag bar -->
+<section class="creature-picker" aria-label="Choose a creature">
 
     <button
         class="creature-option"
         type="button"
         draggable="true"
         data-creature="jellyfish"
+        aria-label="Add jellyfish"
+        title="Jellyfish"
     >
-        Jellyfish
+        <img
+            class="creature-icon"
+            src="./images/icon-jellyfish.png"
+            alt=""
+            draggable="false"
+        >
     </button>
 
     <button
@@ -50,8 +59,15 @@
         type="button"
         draggable="true"
         data-creature="tropicalfish"
+        aria-label="Add tropical fish"
+        title="Tropical fish"
     >
-        Tropical fish
+        <img
+            class="creature-icon"
+            src="./images/icon-tropicalfish.png"
+            alt=""
+            draggable="false"
+        >
     </button>
 
     <button
@@ -59,8 +75,15 @@
         type="button"
         draggable="true"
         data-creature="mantaray"
+        aria-label="Add manta ray"
+        title="Manta ray"
     >
-        Manta ray
+        <img
+            class="creature-icon"
+            src="./images/icon-mantaray.png"
+            alt=""
+            draggable="false"
+        >
     </button>
 
     <button
@@ -68,8 +91,15 @@
         type="button"
         draggable="true"
         data-creature="turtle"
+        aria-label="Add sea turtle"
+        title="Sea turtle"
     >
-        Sea turtle
+        <img
+            class="creature-icon"
+            src="./images/icon-turtle.png"
+            alt=""
+            draggable="false"
+        >
     </button>
 
 </section>
