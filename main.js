@@ -132,18 +132,28 @@ const creatureSounds = {
 
     tropicalfish: new Audio("./assets/audio/tropical-fish.wav"),
 
-    mantaray: new Audio("./assets/audio/manta-ray.mp3")
+    mantaray: new Audio("./assets/audio/manta-ray.wav")
+};
+
+// Set each creature's volume separately.
+const creatureVolumes = {
+    turtle: 1,
+    jellyfish: 0.5,
+    tropicalfish: 1,
+    mantaray: 0.5
 };
 
 Object.values(creatureSounds).forEach((sound) => {
     sound.loop = true;
-    sound.volume = 0.5;
     sound.preload = "auto";
 });
 
 function playCreatureSound(type) {
     const sound = creatureSounds[type];
     if (!sound) return;
+
+    // Apply the correct volume every time playback starts.
+    sound.volume = creatureVolumes[type];
 
     sound.play().catch((error) => {
         console.error("Could not play creature sound:", error);
