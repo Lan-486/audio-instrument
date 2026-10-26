@@ -456,3 +456,7 @@ main > p.instruction {
     font-size: 18px;
     line-height: 1.5;
 }
+
+.creature-picker .creature-option:disabled {
+    pointer-events: none;
+}

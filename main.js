@@ -309,12 +309,41 @@ image.addEventListener("dragstart", (event) => {
 });
 
 // Resume swimming and remove the highlight.
-image.addEventListener("dragend", () => {
+image.addEventListener("dragend", (event) => {
     swimmer.dragging = false;
     image.classList.remove("is-dragging");
 
-    document.querySelector(".creature-picker")
-        .classList.remove("drag-over");
+    const picker = document.querySelector(".creature-picker");
+    picker.classList.remove("drag-over");
+
+    const bounds = picker.getBoundingClientRect();
+
+    // Check whether the mouse was released over the toolbar.
+    const overPicker =
+        event.clientX >= bounds.left &&
+        event.clientX <= bounds.right &&
+        event.clientY >= bounds.top &&
+        event.clientY <= bounds.bottom;
+
+    if (!overPicker) return;
+
+    // The normal drop handler may already have removed it.
+    const index = swimmers.indexOf(swimmer);
+    if (index === -1) return;
+
+    image.remove();
+    swimmers.splice(index, 1);
+    addedTypes.delete(type);
+    stopCreatureSound(type);
+
+    const option = document.querySelector(
+        `.creature-option[data-creature="${type}"]`
+    );
+
+    if (option) {
+        option.disabled = false;
+        option.draggable = true;
+    }
 });
 
         }, { once: true });
