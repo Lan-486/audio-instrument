@@ -482,3 +482,32 @@ picker.addEventListener("drop", (event) => {
 });
     requestAnimationFrame(animate);
 })();
+
+/*
+Audio references
+
+Department64 2022, Underwater Deep Water Flow Loop,
+audio recording, Freesound, viewed 27 October 2026.
+https://freesound.org/people/Department64/sounds/651745/
+
+Glaneur de sons 2010, bubbles (2).wav,
+audio recording, Freesound, viewed 27 October 2026.
+https://freesound.org/people/Glaneur%20de%20sons/sounds/104950/
+
+muri_kuri 2023, whale song,
+audio recording, Freesound, viewed 27 October 2026.
+https://freesound.org/people/muri_kuri/sounds/684188/
+
+Thimblerig 2022, Slow Quiet Water Ripples (remix of 338345),
+audio recording, Freesound, viewed 27 October 2026.
+https://freesound.org/people/Thimblerig/sounds/634753/
+
+Tim_Verberne 2019, Underwater Ambience.wav,
+audio recording, Freesound, viewed 27 October 2026.
+https://freesound.org/people/Tim_Verberne/sounds/482167/
+
+Additional attribution:
+Slow Quiet Water Ripples by Thimblerig is based on
+Splashing Water by Oars.wav by Lubini (CC BY 3.0).
+https://freesound.org/people/Lubini/sounds/338345/
+*/
