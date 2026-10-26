@@ -1,165 +1,458 @@
 @import url('https://fonts.googleapis.com/css2?family=TASA+Explorer:wght@400..800&display=swap');
-/*this is we're storing our custom variables*/
+
 :root {
-    --color-01: #ffe1e1;
-    --color-02: #aeaeae;
-    --color-03: #626f9c;
-    --color-04: #474060;
-    --border: 2px solid var(--color-04);
+    --page-background: #152b36;
+    --text-color: #d2deda;
+    --border-color: #637f89;
 }
-media (prefers-color-scheme: dark) {
-    :root {
-    --color-01: #604040;
-    --color-02: #ffb3b3;
-    --color-03: #ff8080;
-    --color-04: #ffe1e1;
-;
-}
+
+* {
+    box-sizing: border-box;
 }
 
 body {
     margin: 0;
-    padding: 40px;
+    padding: 24px;
     font-family: 'TASA Explorer', sans-serif;
-    background-color: var(--color-01);
-    color: var(--color-04);
+    background-color: var(--page-background);
+    color: var(--text-color);
+}
+
+header {
+   max-width: 1300px;
+    margin: 0 auto 24px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 500;
 }
 
 main {
-  max-width: 900px;
-  margin: 0 auto;
+    max-width: 1300px;
+    margin: 0 auto;
 }
 
-.prototype {
-  display: flex;
-  gap: 40px;
-  margin-top: 40px;
-}
-
-.draggable-area,
-.drop-zone {
-  width: 400px;
-  min-height: 300px;
-  padding: 20px;
-
-  border: 2px solid var(--color-04);
-}
-
-.draggable-area {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-
-  background-color: #ffffff;
-}
-
-.drop-zone {
-  display: flex;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  gap: 20px;
-
-  background-color: var(--color-02);
-}
-
-.creature {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  flex: 0 0 70px;
-  width: 70px;
-  height: 70px;
-
-  background-color: var(--color-03);
-  border: 2px solid var(--color-04);
-
-  font-size: 20px;
-  font-weight: bold;
-
-  cursor: grab;
-}
-
-.creature:active {
-  cursor: grabbing;
-}
-
- dialog
-{
-    background-color: var(--color-02);
-    color: var(--color-04);
-    border: var(--border);
-    padding: 1rem;
-    flex-direction: column;
-    gap: 1rem;
-    align-items: center;
-}
-
-dialog[open] {
-    position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  align-items: center;
-}
-
-button {
-    background-color: var(--color-03);
-    color: var(--color-04);
-    border: var(--border);
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    cursor: pointer;
-}
 
 .aquarium {
-  position: relative;
-  width: min(80vw, 900px);
-  height: 500px;
-  margin: 40px auto;
-  overflow: hidden;
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
 
-  border: 2px solid var(--color-04);
-  background-color: var(--color-02);
+    background-color: #152b36;
+    background-image: url("./images/background.png");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
-.instruction {
-  position: absolute;
-  top: 20px;
-  left: 0;
-  z-index: 1;
-  width: 100%;
-  margin: 0;
-  text-align: center;
+/* Transparent creature images */
+.creature {
+    position: absolute;
+    display: block;
+    height: auto;
+
+    background: transparent;
+    border: none;
+
+    z-index: 1;
 }
 
+.turtle {
+    width: 56%;
+    left: 38%;
+    top: 35%;
+}
+
+.jellyfish {
+    width: 34%;
+    left: 12%;
+    top: 12%;
+}
+
+/* Bubble layer */
 .bubbles-container {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 2;
 }
 
 .bubble {
-  position: absolute;
-  bottom: -30px;
-  border: 1px solid white;
-  border-radius: 50%;
-  background-color: rgb(255 255 255 / 35%);
-  animation: bubble-rise 4s ease-in forwards;
+    position: absolute;
+    bottom: -30px;
+
+    border: 1px solid rgb(255 255 255 / 70%);
+    border-radius: 50%;
+    background-color: rgb(255 255 255 / 15%);
+
+    animation: bubble-rise 4s ease-in forwards;
 }
 
 @keyframes bubble-rise {
-  from {
-    transform: translateX(0) translateY(0);
-    opacity: 0.8;
-  }
+    from {
+        transform: translateX(0) translateY(0);
+        opacity: 0.8;
+    }
 
-  to {
-    transform: translateX(var(--drift)) translateY(-550px);
-    opacity: 0;
-  }
+    to {
+        transform: translateX(var(--drift, 0px)) translateY(-950px);
+        opacity: 0;
+    }
+}
+
+/* Instructions */
+.instruction {
+    position: absolute;
+    bottom: 16px;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0 16px;
+
+    color: var(--text-color);
+    font-size: 14px;
+    text-align: center;
+    z-index: 3;
+}
+
+/* Sound introduction dialog */
+dialog {
+    position: fixed;
+    inset: 0;
+    width: min(90vw, 360px);
+    height: fit-content;
+    margin: auto;
+    padding: 24px;
+
+    background-color: #294650;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+}
+
+dialog[open] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+dialog p {
+    margin: 0;
+}
+
+dialog::backdrop {
+    background-color: rgb(0 0 0 / 50%);
+}
+
+button {
+    padding: 8px 20px;
+    font: inherit;
+    color: var(--text-color);
+    background-color: #45635f;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Fit the whole page into one screen */
+html {
+    height: 100%;
+}
+
+body {
+    height: 100vh;
+    height: 100dvh;
+    padding: 16px 24px;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+header {
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+    flex-shrink: 0;
+}
+
+h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+/* Aquarium above, narrow drag bar below */
+main {
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+
+    flex: 1;
+    min-height: 0;
+
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) 64px;
+    gap: 12px;
+}
+
+.aquarium {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    aspect-ratio: auto;
+    margin: 0;
+
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Narrow drag bar */
+.creature-picker {
+    margin: 0;
+    padding: 8px 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    background-color: #294650;
+    border: 1px solid #637f89;
+    border-radius: 10px;
+}
+
+.picker-label {
+    font-size: 14px;
+}
+
+/* Temporary text buttons */
+.creature-option {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: auto;
+    min-height: 0;
+    height: 44px;
+    padding: 0 20px;
+
+    font-size: 14px;
+    white-space: nowrap;
+    cursor: grab;
+}
+
+.creature-option:active {
+    cursor: grabbing;
+}
+
+.creature-option:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+/* Actual artwork only appears inside the aquarium */
+.aquarium .swimming-creature {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: auto;
+
+    background: transparent;
+    border: none;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.swimming-creature.turtle {
+    width: 56%;
+}
+
+.swimming-creature.jellyfish {
+    width: 34%;
+}
+
+.aquarium .swimming-creature {
+    pointer-events: auto;
+    cursor: grab;
+}
+
+.aquarium .swimming-creature:active {
+    cursor: grabbing;
+}
+
+.creature-picker.drag-over {
+    outline: 2px solid #a8c8ce;
+    background-color: #365565;
+}
+
+/* Highlight the creature's silhouette on hover. */
+.aquarium .swimming-creature {
+    pointer-events: auto;
+    cursor: grab;
+    transition: filter 0.25s ease;
+}
+
+.aquarium .swimming-creature:hover {
+    filter: drop-shadow(0 0 6px #b9e6ed);
+}
+
+/* Stronger glow while dragging. */
+.aquarium .swimming-creature.is-dragging {
+    cursor: grabbing;
+    filter:
+        drop-shadow(0 0 5px #d5f5ff)
+        drop-shadow(0 0 12px #8bcbdc);
+}
+
+/* Size of the new creatures inside the aquarium */
+.aquarium .swimming-creature.tropicalfish {
+    width: 10%;
+}
+
+.aquarium .swimming-creature.mantaray {
+    width: 28%;
+}
+
+/* Make room for four temporary text buttons */
+.creature-picker {
+    width: min(100%, 660px);
+    gap: 12px;
+}
+
+.creature-option {
+    width: auto;
+    min-width: 0;
+    padding: 0 12px;
+    white-space: nowrap;
+}
+
+/* Narrow icon toolbar */
+.creature-picker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+
+    width: min(100%, 420px);
+    height: 64px;
+    padding: 6px 16px;
+    margin: 0;
+    justify-self: center;
+    align-self: center;
+
+    background-color: #203b4b;
+    border: 1px solid #537080;
+    border-radius: 999px;
+}
+
+/* Draggable buttons */
+.creature-picker .creature-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 1 52px;
+
+    width: 52px;
+    min-width: 0;
+    height: 52px;
+    min-height: 0;
+    padding: 6px;
+
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    cursor: grab;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+/* Override the previous button image dimensions */
+.creature-picker .creature-option .creature-icon {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+
+    pointer-events: none;
+    user-select: none;
+}
+
+.creature-picker .creature-option:hover:not(:disabled) {
+    background-color: rgb(255 255 255 / 8%);
+    border-color: #a8d6e5;
+}
+
+.creature-picker .creature-option:active:not(:disabled) {
+    cursor: grabbing;
+}
+
+.creature-picker .creature-option:focus-visible {
+    outline: 2px solid #a8d6e5;
+    outline-offset: 2px;
+}
+
+.creature-picker .creature-option:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+/* Larger title */
+header h1 {
+    font-size: clamp(28px, 3vw, 42px);
+    font-weight: 600;
+    line-height: 1.2;
+    margin: 0;
+}
+
+/* Aquarium, instructions, then icon bar */
+main {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto 64px;
+    gap: 8px;
+
+    flex: 1;
+    min-height: 0;
+}
+
+/* Place instructions outside the image */
+.instruction {
+    position: static;
+    inset: auto;
+    transform: none;
+
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+
+    font-size: 14px;
+    line-height: 1.5;
+    color: #b5ced9;
+}
+
+main > p.instruction {
+    position: static;
+    display: block;
+    grid-column: 1 / -1;
+    justify-self: stretch;
+
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+
+    text-align: center;
+    text-indent: 0;
+    font-size: 18px;
+    line-height: 1.5;
 }
